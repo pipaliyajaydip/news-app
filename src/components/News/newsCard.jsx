@@ -1,25 +1,25 @@
 import {Card, CardActions, CardContent, CardMedia, Button, Typography} from '@mui/material';
+import "./newsList.css";
 
-const NewsCard = () => {
+const NewsCard = ({headLine, shortDiscription, link, imgsrc}) => {
   return (
-    <Card sx={{ maxWidth: 345 }}>
+    <Card sx={{ maxWidth: 358 }}>
       <CardMedia
         component="img"
         alt="green iguana"
-        height="140"
-        image="/static/images/cards/contemplative-reptile.jpg"
+        height="250"
+        image={imgsrc}
       />
       <CardContent>
         <Typography gutterBottom variant="h5" component="div">
-          Lizard
+          {headLine}
         </Typography>
         <Typography variant="body2" color="text.secondary">
-          Lizards are a widespread group of squamate reptiles, with over 6,000
-          species, ranging across all continents except Antarctica
+          {shortDiscription}
         </Typography>
       </CardContent>
       <CardActions>
-        <Button size='small' variant='outlined'>Learn More</Button>
+        <Button href = {link} size='small' variant='outlined' target='_blank'>Learn More</Button>
       </CardActions>
     </Card>
   );

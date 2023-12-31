@@ -1,162 +1,161 @@
-import * as React from 'react';
-import AppBar from '@mui/material/AppBar';
-import Box from '@mui/material/Box';
-import Toolbar from '@mui/material/Toolbar';
-import IconButton from '@mui/material/IconButton';
-import Typography from '@mui/material/Typography';
-import Menu from '@mui/material/Menu';
-import MenuIcon from '@mui/icons-material/Menu';
-import Container from '@mui/material/Container';
-import Avatar from '@mui/material/Avatar';
-import Button from '@mui/material/Button';
-import Tooltip from '@mui/material/Tooltip';
-import MenuItem from '@mui/material/MenuItem';
-import AdbIcon from '@mui/icons-material/Adb';
+import { AppBar, Toolbar, Typography, Tabs, Tab, Box, Menu, MenuItem, Tooltip, useMediaQuery, useTheme } from "@mui/material";
+import AccountCircleIcon from '@mui/icons-material/AccountCircle';
+import React, { useState } from "react";
+import NewspaperIcon from '@mui/icons-material/Newspaper';
+import NewsList from "../News/newsList";
 
-const pages = ['Products', 'Pricing', 'Blog'];
-const settings = ['Profile', 'Account', 'Dashboard', 'Logout'];
+// sidebar for mobile screen
+import Sidebar from "./ForMobile/sidebar";
+import BottomNavBar from "./ForMobile/bottom_nav_bar";
 
-const NavBar = () => {
-  const [anchorElNav, setAnchorElNav] = React.useState(null);
-  const [anchorElUser, setAnchorElUser] = React.useState(null);
+//why we use React.Fragment beacuse div html dom take more time and memory insted of this we use React.Fragment...
 
-  const handleOpenNavMenu = (event) => {
-    setAnchorElNav(event.currentTarget);
-  };
-  const handleOpenUserMenu = (event) => {
-    setAnchorElUser(event.currentTarget);
-  };
+const settingList = ['Profile', 'Account', 'Dashboard', 'Logout'];
 
-  const handleCloseNavMenu = () => {
-    setAnchorElNav(null);
-  };
+const NavBar = (props) => {
 
-  const handleCloseUserMenu = () => {
-    setAnchorElUser(null);
-  };
+    // for tabs navigation indicator
+    const [value, setValue] = useState(0);
 
-  return (
-    <AppBar position="static">
-      <Container maxWidth="xl">
-        <Toolbar disableGutters>
-          <AdbIcon sx={{ display: { xs: 'none', md: 'flex' }, mr: 1 }} />
-          <Typography
-            variant="h6"
-            noWrap
-            component="a"
-            href="#app-bar-with-responsive-menu"
-            sx={{
-              mr: 2,
-              display: { xs: 'none', md: 'flex' },
-              fontFamily: 'monospace',
-              fontWeight: 700,
-              letterSpacing: '.3rem',
-              color: 'inherit',
-              textDecoration: 'none',
-            }}
-          >
-            LOGO
-          </Typography>
+    // for open and close menubar user set ting
+    const [userOpen, setUserOpen] = useState(null);
 
-          <Box sx={{ flexGrow: 1, display: { xs: 'flex', md: 'none' } }}>
-            <IconButton
-              size="large"
-              aria-label="account of current user"
-              aria-controls="menu-appbar"
-              aria-haspopup="true"
-              onClick={handleOpenNavMenu}
-              color="inherit"
-            >
-              <MenuIcon />
-            </IconButton>
-            <Menu
-              id="menu-appbar"
-              anchorEl={anchorElNav}
-              anchorOrigin={{
-                vertical: 'bottom',
-                horizontal: 'left',
-              }}
-              keepMounted
-              transformOrigin={{
-                vertical: 'top',
-                horizontal: 'left',
-              }}
-              open={Boolean(anchorElNav)}
-              onClose={handleCloseNavMenu}
-              sx={{
-                display: { xs: 'block', md: 'none' },
-              }}
-            >
-              {pages.map((page) => (
-                <MenuItem key={page} onClick={handleCloseNavMenu}>
-                  <Typography textAlign="center">{page}</Typography>
-                </MenuItem>
-              ))}
-            </Menu>
-          </Box>
-          <AdbIcon sx={{ display: { xs: 'flex', md: 'none' }, mr: 1 }} />
-          <Typography
-            variant="h5"
-            noWrap
-            component="a"
-            href="#app-bar-with-responsive-menu"
-            sx={{
-              mr: 2,
-              display: { xs: 'flex', md: 'none' },
-              flexGrow: 1,
-              fontFamily: 'monospace',
-              fontWeight: 700,
-              letterSpacing: '.3rem',
-              color: 'inherit',
-              textDecoration: 'none',
-            }}
-          >
-            LOGO
-          </Typography>
-          <Box sx={{ flexGrow: 1, display: { xs: 'none', md: 'flex' } }}>
-            {pages.map((page) => (
-              <Button
-                key={page}
-                onClick={handleCloseNavMenu}
-                sx={{ my: 2, color: 'white', display: 'block' }}
-              >
-                {page}
-              </Button>
-            ))}
-          </Box>
+    //for catagory
+    const [catagory, setCatagory] = useState("")
+    const [search, setSearch] = useState("")
 
-          <Box sx={{ flexGrow: 0 }}>
-            <Tooltip title="Open settings">
-              <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
-                <Avatar alt="Remy Sharp" src="/static/images/avatar/2.jpg" />
-              </IconButton>
-            </Tooltip>
-            <Menu
-              sx={{ mt: '45px' }}
-              id="menu-appbar"
-              anchorEl={anchorElUser}
-              anchorOrigin={{
-                vertical: 'top',
-                horizontal: 'right',
-              }}
-              keepMounted
-              transformOrigin={{
-                vertical: 'top',
-                horizontal: 'right',
-              }}
-              open={Boolean(anchorElUser)}
-              onClose={handleCloseUserMenu}
-            >
-              {settings.map((setting) => (
-                <MenuItem key={setting} onClick={handleCloseUserMenu}>
-                  <Typography textAlign="center">{setting}</Typography>
-                </MenuItem>
-              ))}
-            </Menu>
-          </Box>
-        </Toolbar>
-      </Container>
-    </AppBar>
-  );
+    // for catagory handle
+    const handleCategoryClick = (categoryTerm) => {
+        setCatagory(categoryTerm);
+        setSearch(categoryTerm);
+    }
+
+    // open
+    const handleOpenUserMenu = (event) => {
+        setUserOpen(event.currentTarget);
+    }
+    // close
+    const handleCloseUserMenu = () => {
+        setUserOpen(null)
+    }
+
+    // for mobile screen sidebar function
+    const theme = useTheme();
+    // console.log(theme)
+
+    const isMatch = useMediaQuery(theme.breakpoints.down('md'));
+    // console.log(isMatch);
+
+
+    return (
+        <React.Fragment>
+            <header>
+            <AppBar>
+                <Toolbar>
+                    {isMatch ? (
+                        <>
+                            <Sidebar onClick={() => handleCategoryClick("sports")} />
+                            <Typography sx={{ flexGrow: 1, textAlign:'center'}} variant='h5' >TOP-NEWS</Typography>
+                            <Box sx={{ flexGrow: 0, marginLeft: 'auto' }}>
+                                <Tooltip title='Open settings'>
+                                    <AccountCircleIcon fontSize="large" onClick={handleOpenUserMenu} />
+                                </Tooltip>
+
+                                <Menu
+                                    sx={{ mt: '45px' }}
+                                    
+                                    anchorEl={userOpen}
+                                    anchorOrigin={{
+                                        vertical: 'top',
+                                        horizontal: 'left'
+                                    }}
+                                    keepMounted
+                                    transformOrigin={{
+                                        vertical: 'top',
+                                        horizontal: 'left'
+                                    }}
+                                    open={Boolean(userOpen)}
+                                    onClose={handleCloseUserMenu}
+                                >
+                                    {settingList.map((setting) => (
+                                        <MenuItem key={setting} >
+                                            <Typography textAlign='center'>{setting}</Typography>
+                                        </MenuItem>
+                                    ))}
+                                </Menu>
+                            </Box>
+                            <BottomNavBar />
+                        </>
+                    ) : (
+                        <>
+                            <NewspaperIcon fontSize="large" />
+                            <Typography
+                              variant="h6"
+                              noWrap
+                              component="a"
+                              href="/"
+                              sx={{
+                                mr: 3,
+                                display: { xs: 'none', md: 'flex' },
+                                fontFamily: 'monospace',
+                                fontWeight: 700,
+                                letterSpacing: '.3rem',
+                                color: 'inherit',
+                                textDecoration: 'none',
+                              }}
+                            >
+                              TOP-NEWS
+                            </Typography>
+                            <Tabs sx={{ marginLeft: 'auto' }}
+                                textColor='inherit' value={value} onChange={(e, value) => setValue(value)} TabIndicatorProps={{
+                                    style: {
+                                        backgroundColor: 'orange'
+                                    }
+                                }}>
+                                <Tab label='Health' onClick={() => handleCategoryClick("health")} /> 
+                                <Tab label='Technology' onClick={() => handleCategoryClick("technology")} />
+                                <Tab label='Business' onClick={() => handleCategoryClick("business")} />
+                                <Tab label='Sports' onClick={() => handleCategoryClick("sports")} />
+                                {/* <Tab label={<AccountCircleIcon fontSize="large" />} disabled/> */}
+                            </Tabs>
+
+
+                            <Box sx={{ flexGrow: 0 }}>
+                                <Tooltip title='Open settings'>
+                                    <AccountCircleIcon fontSize="large" onClick={handleOpenUserMenu} />
+                                </Tooltip>
+
+                                <Menu
+                                    sx={{ mt: '45px' }}
+
+                                    anchorEl={userOpen}
+                                    anchorOrigin={{
+                                        vertical: 'top',
+                                        horizontal: 'left'
+                                    }}
+                                    keepMounted
+                                    transformOrigin={{
+                                        vertical: 'top',
+                                        horizontal: 'left'
+                                    }}
+                                    open={Boolean(userOpen)}
+                                    onClose={handleCloseUserMenu}
+                                >
+                                    {settingList.map((setting) => (
+                                        <MenuItem key={setting} >
+                                            <Typography textAlign='center'>{setting}</Typography>
+                                        </MenuItem>
+                                    ))}
+                                </Menu>
+                            </Box>
+                        </>
+                    )}
+                </Toolbar>
+            </AppBar>
+            </header>
+            <NewsList catagory={catagory} search={search}/>
+        </React.Fragment>
+    )
 }
+
 export default NavBar;
